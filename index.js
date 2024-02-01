@@ -24,7 +24,7 @@ app.use(cors());
 //         "https://example.com/image2.jpg"
 //     ]
 // }
-app.post('/product', async (req, res) => {
+app.post('/product/id', async (req, res) => {
     try {
         const product = await Product.create(req.body);
         res.status(201).json(product);
@@ -33,6 +33,20 @@ app.post('/product', async (req, res) => {
     }
 });
 
+// Update product
+app.put('/product/:id', async (req, res) => {
+    try {
+        const product = await Product.findByPk(req.params.id);
+        if (product) {
+            await product.update(req.body);
+            res.json(product);
+        } else {
+            res.status(404).json({ error: 'Product not found' });
+        }
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
 // Read product
 app.get('/product/:id', async (req, res) => {
     try {
