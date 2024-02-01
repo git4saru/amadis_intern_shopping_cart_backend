@@ -1,11 +1,9 @@
 const express = require('express');
-const cors = require('cors'); 
 const app = express();
 const port = 3008;
 const Product = require('./product');
 
 app.use(express.json());
-app.use(cors());
 
 // Create product
 // expected body format:
@@ -24,7 +22,7 @@ app.use(cors());
 //         "https://example.com/image2.jpg"
 //     ]
 // }
-app.post('/product/id', async (req, res) => {
+app.post('/product', async (req, res) => {
     try {
         const product = await Product.create(req.body);
         res.status(201).json(product);
@@ -33,20 +31,6 @@ app.post('/product/id', async (req, res) => {
     }
 });
 
-// Update product
-app.put('/product/:id', async (req, res) => {
-    try {
-        const product = await Product.findByPk(req.params.id);
-        if (product) {
-            await product.update(req.body);
-            res.json(product);
-        } else {
-            res.status(404).json({ error: 'Product not found' });
-        }
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
 // Read product
 app.get('/product/:id', async (req, res) => {
     try {
@@ -80,6 +64,21 @@ app.get('/products', async (req, res) => {
     try {
         const products = await Product.findAll();
         res.json(products);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Update product
+app.put('/product/:id', async (req, res) => {
+    try {
+        const product = await Product.findByPk(req.params.id);
+        if (product) {
+            await product.update(req.body);
+            res.json(product);
+        } else {
+            res.status(404).json({ error: 'Product not found' });
+        }
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
