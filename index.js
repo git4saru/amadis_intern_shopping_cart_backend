@@ -4,8 +4,9 @@ const cors = require('cors');
 const port = 3008;
 const Product = require('./product');
 
-app.use(express.json());
 app.use(cors());
+
+app.use(express.json());
 
 // Create product
 // expected body format:
@@ -64,7 +65,11 @@ app.delete('/product/:id', async (req, res) => {
 // for retrieving all products
 app.get('/products', async (req, res) => {
     try {
-        const products = await Product.findAll();
+        const products = await Product.findAll({
+            order: [
+                ['createdAt', 'DESC']
+            ]
+        });
         res.json(products);
     } catch (err) {
         res.status(500).json({ error: err.message });
